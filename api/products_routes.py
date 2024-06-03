@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from database import get_db_connection
+from api.database import get_db_connection
 from flask_cors import cross_origin
 import math
 
