@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template
 from flask import send_from_directory
-
+#
 #from routes.products_routes import product_bp
 #from flask_cors import CORS
 
