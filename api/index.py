@@ -10,7 +10,7 @@ app = Flask(__name__)
 #app.static_folder = 'static'
 
 # Registrar Blueprint
-#app.register_blueprint(product_bp)
+app.register_blueprint(product_bp, url_prefix='/api')
 
 #@app.route('/styles.css')
 #def styles():
