@@ -1,0 +1,40 @@
+.product-card {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 100%; /* Ancho máximo */
+    max-width: 250px; /* Ancho máximo permitido */
+    text-align: center; /* Centrar el contenido */
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+}
+
+/* Ajustar el tamaño de la fuente para que se ajuste al tamaño de la tarjeta */
+.product-card h3,
+.product-card p {
+    font-size: 14px;
+}
+
+/* Estilos para la paginación */
+.pagination-btn {
+    margin-left: 10px;
+}
+
+/* Estilos para el botón de borrar filtro */
+#clearFilter {
+    margin-right: 10px;
+}
+
+/* Estilos para el botón de búsqueda */
+#searchInput {
+    width: 200px;
+    margin-right: 10px;
+}
+
+#currentPageInfo{
+    margin-left: 2vh;
+    margin-right: 2vh;
+}

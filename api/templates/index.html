@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Productos</h1>
+        
+        <!-- Buscador y botón de borrar filtro -->
+        <div class="d-flex justify-content-between mb-3">
+            <div class="form-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar productos">
+            </div>
+            <button type="button" class="btn btn-secondary" id="clearFilter">Borrar Filtro</button>
+
+            <!-- Botones de ordenamiento y filtro -->
+            <div>
+                <button type="button" class="btn btn-primary pagination-btn" id="sortAsc">Ordenar Asc</button>
+                <button type="button" class="btn btn-primary pagination-btn" id="sortDesc">Ordenar Desc</button>
+                <button type="button" class="btn btn-primary pagination-btn" id="filterPrice">Filtrar Precio</button>
+            </div>
+        </div>
+
+        <!-- Resultados de la búsqueda -->
+        <div id="searchResults"></div>
+
+        <!-- Paginación -->
+        <nav aria-label="Page navigation">
+            <ul id="pagination" class="pagination justify-content-center">
+                <li class="page-item" id="prevPage">
+                    <button class="btn btn-primary page-link">Anterior</button>
+                </li>
+
+                <div id="currentPageInfo"></div>
+
+                <li class="page-item" id="nextPage">
+                    <button class="btn btn-primary page-link">Siguiente</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var currentPage = 1;
+            var itemsPerPage = 12;
+            var totalPages = 0;
+
+            // Función para realizar la búsqueda
+            function searchProducts(query) {
+                $.get(`/search?q=${query}`, function(data) {
+                    displayProducts(data);
+                });
+            }
+
+            // Función para mostrar los productos
+            function displayProducts(categories) {
+                var productHtml = '<div class="row">';
+                categories.forEach(function(category) {
+                    category.products.forEach(function(product) {
+                        productHtml += `
+                            <div class="col-md-2">
+                                <div class="product-card">
+                                    <h3>${product.name}</h3>
+                                    <p>Categoría: ${category.name}</p>
+                                    <img src="${product.url_image}" alt="${product.name}" class="product-image">
+                                    <p>Precio: $${product.price}</p>
+                                    <p>Descuento: ${product.discount}%</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+                productHtml += '</div>'; // Cerrar la fila
+                $('#searchResults').html(productHtml);
+            }
+
+            // Función para paginar los resultados
+            function paginateProducts(page) {
+                $.get(`/products?page=${page}&items_per_page=${itemsPerPage}`, function(data) {
+                    displayProducts(data);
+                });
+            }
+
+            // Función para actualizar la paginación
+            function updatePaginationButtons() {
+                $('#prevPage').toggle(currentPage > 1);
+                $('#nextPage').toggle(currentPage < totalPages);
+            }
+
+            // Realizar búsqueda al presionar Enter en el input de búsqueda
+            $('#searchInput').keypress(function(event) {
+                if (event.which === 13) {
+                    var query = $(this).val();
+                    searchProducts(query);
+                }
+            });
+
+            // Botón para ir a la página anterior
+            $('#prevPage').click(function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    paginateProducts(currentPage);
+                    updatePaginationButtons();
+                }
+            });
+
+            // Botón para ir a la página siguiente
+            $('#nextPage').click(function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    paginateProducts(currentPage);
+                    updatePaginationButtons();
+                }
+            });
+
+            // Botón para borrar el filtro
+            $('#clearFilter').click(function() {
+                $('#searchInput').val('');
+                currentPage = 1;
+                paginateProducts(currentPage);
+                updatePaginationButtons();
+            });
+
+            // Botón para ordenar ascendente
+            $('#sortAsc').click(function() {
+                $.get(`/products?page=${currentPage}&items_per_page=${itemsPerPage}&sort_by=price_asc`, function(data) {
+                    displayProducts(data);
+                });
+            });
+
+            // Botón para ordenar descendente
+            $('#sortDesc').click(function() {
+                $.get(`/products?page=${currentPage}&items_per_page=${itemsPerPage}&sort_by=price_desc`, function(data) {
+                    displayProducts(data);
+                });
+            });
+
+            // Botón para filtrar por precio
+            $('#filterPrice').click(function() {
+                var minPrice = prompt('Ingrese el precio mínimo:');
+                var maxPrice = prompt('Ingrese el precio máximo:');
+                if (minPrice !== null && maxPrice !== null) {
+                    $.get(`/products?page=${currentPage}&items_per_page=${itemsPerPage}&filter_by=price&min_price=${minPrice}&max_price=${maxPrice}`, function(data) {
+                        displayProducts(data);
+                        updatePaginationButtons();
+                    }).fail(function() {
+                        alert('Hubo un error al aplicar el filtro de precio.');
+                    });
+                }
+            });
+
+            // Obtener el número total de páginas
+            $.get('/total_pages', function(data) {
+                totalPages = data.total_pages;
+                updatePaginationButtons();
+            });
+            function paginateProducts(page) {
+                $.get(`/products?page=${page}&items_per_page=${itemsPerPage}`, function(data) {
+                    displayProducts(data);
+                    currentPage = page; // Actualizar el número de página actual
+                    updateCurrentPageInfo(); // Llamar a la función para actualizar la información de la página actual
+                });
+            }
+            function updateCurrentPageInfo() {
+                $('#currentPageInfo').text('Página ' + currentPage);
+            }
+
+            // Mostrar resultados al cargar la página
+            paginateProducts(currentPage);
+        });
+    </script>
+</body>
+</html>
