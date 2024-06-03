@@ -55,7 +55,7 @@
 
             // Función para realizar la búsqueda
             function searchProducts(query) {
-                $.get(`/search?q=${query}`, function(data) {
+                $.get(`api/search?q=${query}`, function(data) {
                     displayProducts(data);
                 });
             }
@@ -158,7 +158,7 @@
             });
 
             // Obtener el número total de páginas
-            $.get('/total_pages', function(data) {
+            $.get('api/total_pages', function(data) {
                 totalPages = data.total_pages;
                 updatePaginationButtons();
             });
