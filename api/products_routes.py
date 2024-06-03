@@ -5,55 +5,6 @@ import math
 
 product_bp = Blueprint('product_bp', __name__)
 
-@product_bp.route('/products_by_category', methods=['GET'])
-def get_products_by_category():
-    connection = get_db_connection()
-    if connection:
-        cursor = connection.cursor(dictionary=True)
-        query = """
-            SELECT 
-                c.id as category_id, 
-                c.name as category_name, 
-                p.id as product_id, 
-                p.name as product_name, 
-                p.url_image, 
-                p.price, 
-                p.discount 
-            FROM 
-                product p 
-            JOIN 
-                category c 
-            ON 
-                p.category = c.id
-            """
-        cursor.execute(query)
-        results = cursor.fetchall()
-        cursor.close()
-        connection.close()
-
-        # Agrupar productos por categoría
-        categories = {}
-        for row in results:
-            category_id = row['category_id']
-            if category_id not in categories:
-                categories[category_id] = {
-                    'id': category_id,
-                    'name': row['category_name'],
-                    'products': []
-                }
-            product = {
-                'id': row['product_id'],
-                'name': row['product_name'],
-                'url_image': row['url_image'],
-                'price': row['price'],
-                'discount': row['discount']
-            }
-            categories[category_id]['products'].append(product)
-        
-        return jsonify(list(categories.values()))
-    else:
-        return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
-
 @product_bp.route('/search', methods=['GET'])
 def search_products():
     query = request.args.get('q', '')
