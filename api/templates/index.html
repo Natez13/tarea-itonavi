@@ -84,7 +84,7 @@
 
             // Función para paginar los resultados
             function paginateProducts(page) {
-                $.get(`/products?page=${page}&items_per_page=${itemsPerPage}`, function(data) {
+                $.get(`api/products?page=${page}&items_per_page=${itemsPerPage}`, function(data) {
                     displayProducts(data);
                 });
             }
@@ -131,14 +131,14 @@
 
             // Botón para ordenar ascendente
             $('#sortAsc').click(function() {
-                $.get(`/products?page=${currentPage}&items_per_page=${itemsPerPage}&sort_by=price_asc`, function(data) {
+                $.get(`api/products?page=${currentPage}&items_per_page=${itemsPerPage}&sort_by=price_asc`, function(data) {
                     displayProducts(data);
                 });
             });
 
             // Botón para ordenar descendente
             $('#sortDesc').click(function() {
-                $.get(`/products?page=${currentPage}&items_per_page=${itemsPerPage}&sort_by=price_desc`, function(data) {
+                $.get(`api/products?page=${currentPage}&items_per_page=${itemsPerPage}&sort_by=price_desc`, function(data) {
                     displayProducts(data);
                 });
             });
@@ -148,7 +148,7 @@
                 var minPrice = prompt('Ingrese el precio mínimo:');
                 var maxPrice = prompt('Ingrese el precio máximo:');
                 if (minPrice !== null && maxPrice !== null) {
-                    $.get(`/products?page=${currentPage}&items_per_page=${itemsPerPage}&filter_by=price&min_price=${minPrice}&max_price=${maxPrice}`, function(data) {
+                    $.get(`api/products?page=${currentPage}&items_per_page=${itemsPerPage}&filter_by=price&min_price=${minPrice}&max_price=${maxPrice}`, function(data) {
                         displayProducts(data);
                         updatePaginationButtons();
                     }).fail(function() {
@@ -163,7 +163,7 @@
                 updatePaginationButtons();
             });
             function paginateProducts(page) {
-                $.get(`/products?page=${page}&items_per_page=${itemsPerPage}`, function(data) {
+                $.get(`api/products?page=${page}&items_per_page=${itemsPerPage}`, function(data) {
                     displayProducts(data);
                     currentPage = page; // Actualizar el número de página actual
                     updateCurrentPageInfo(); // Llamar a la función para actualizar la información de la página actual
