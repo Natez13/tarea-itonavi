@@ -65,6 +65,7 @@
                 var productHtml = '<div class="row">';
                 categories.forEach(function(category) {
                     category.products.forEach(function(product) {
+                        var discountedPrice = product.price * (1 - product.discount / 100); // Calcular el precio con descuento
                         productHtml += `
                             <div class="col-md-2">
                                 <div class="product-card">
@@ -73,6 +74,7 @@
                                     <img src="${product.url_image}" alt="${product.name}" class="product-image">
                                     <p>Precio: $${product.price}</p>
                                     <p>Descuento: ${product.discount}%</p>
+                                    <p style="color: red; font-weight: bold;">Precio con Descuento: $${discountedPrice.toFixed(2)}</p>
                                 </div>
                             </div>
                         `;
@@ -81,6 +83,7 @@
                 productHtml += '</div>'; // Cerrar la fila
                 $('#searchResults').html(productHtml);
             }
+
 
             // Función para paginar los resultados
             function paginateProducts(page) {
