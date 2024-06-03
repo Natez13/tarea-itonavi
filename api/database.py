@@ -2,7 +2,7 @@
 
 import mysql.connector
 from mysql.connector import Error
-from configuration.config_db import db_config
+from api.config_db import db_config
 
 def get_db_connection():
     try:
